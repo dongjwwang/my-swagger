@@ -1,0 +1,99 @@
+swagger: "2.0"
+info:
+  title: CED API
+  description: These APIs provide services for manipulating Cloud Edge Distribution (aka CED) project.
+  version: "1.0"
+host: local.noip.site
+schemes:
+  - http
+basePath: "/api/ced/v1/"
+produces:
+  - application/json
+consumes:
+  - application/json
+securityDefinitions:
+  basic:
+    type: basic
+security:
+  - basic: [ ]
+  - { }
+paths:
+  # ---==== policy api ====---
+  /policies:
+    post:
+      summary: Create policy
+      description: Create policy
+      operationId: addPolicy
+      tags:
+        - Policy
+      parameters:
+        - $ref: "#/parameters/requestId"
+        - name: policy
+          in: body
+          description: The policy to create
+          schema:
+            $ref: "#/definitions/Policy"
+      responses:
+        "200":
+          $ref: "#/responses/200"
+        "500":
+          $ref: "#/responses/500"
+parameters:
+  id:
+    name: id
+    description: An unique ID for specific resource
+    in: path
+    type: string
+    required: true
+    minLength: 1
+  requestId:
+    name: X-Request-Id
+    description: An unique ID for the request
+    in: header
+    type: string
+    required: false
+    minLength: 1
+responses:
+  "200":
+    description: Success
+    headers:
+      X-Request-Id:
+        description: The ID of the corresponding request for the response
+        type: string
+  "500":
+    description: Internal server error
+    headers:
+      X-Request-Id:
+        description: The ID of the corresponding request for the response
+        type: string
+    schema:
+      $ref: "#/definitions/Errors"
+definitions:
+  Errors:
+    description: The error array that describe the errors got during the handling of request
+    type: object
+    properties:
+      errors:
+        type: array
+        items:
+          $ref: "#/definitions/Error"
+  Error:
+    description: a model for all the error response coming from harbor
+    type: object
+    properties:
+      code:
+        type: string
+        description: The error code
+      message:
+        type: string
+        description: The error message
+  Policy:
+    type: object
+    description: The model for policy
+    properties:
+      id:
+        type: integer
+        description: The policy id
+      name:
+        type: string
+        description: The policy name
